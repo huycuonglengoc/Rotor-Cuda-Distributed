@@ -1,0 +1,6 @@
+obj/
+Rotor-Cuda/Rotor
+Found.txt
+.DS_Store
+__pycache__/
+*.py[cod]

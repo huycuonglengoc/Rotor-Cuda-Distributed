@@ -13,6 +13,10 @@ SRC = Base58.cpp IntGroup.cpp Main.cpp Bloom.cpp Random.cpp Sort.cpp \
 
 OBJDIR = obj
 
+# Keep the executable as the default target.  The GPU object rule below must
+# not become the implicit default when GPU support is enabled.
+.DEFAULT_GOAL := all
+
 ifdef gpu
 
 OBJET = $(addprefix $(OBJDIR)/, \

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # One-line installer + runner for the distributed Rotor-Cuda client (Linux).
 #
-#   curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USER/Rotor-Cuda-Distributed/main/client/install.sh | bash -s -- --server https://YOUR-APP.up.railway.app --token CLIENT_TOKEN
+#   curl -fsSL https://raw.githubusercontent.com/huycuonglengoc/Rotor-Cuda-Distributed/main/client/install.sh | bash -s -- --server https://YOUR-APP.up.railway.app --token CLIENT_TOKEN
 #
 # All arguments after `--` are passed to client/rotor_client.py (see --help there).
 # Env: REPO_URL, INSTALL_DIR, CUDA_HOME, CCAP (override GPU compute capability, e.g. 8.6)
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/YOUR_GITHUB_USER/Rotor-Cuda-Distributed.git}"
+REPO_URL="${REPO_URL:-https://github.com/huycuonglengoc/Rotor-Cuda-Distributed.git}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/Rotor-Cuda-Distributed}"
 CUDA_HOME="${CUDA_HOME:-/usr/local/cuda}"
 SUDO=""; [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null && SUDO="sudo"
@@ -44,15 +44,21 @@ if [ -x "$CUDA_HOME/bin/nvcc" ] && command -v nvidia-smi >/dev/null; then
   log "GPU build, compute capability $CC"
   if [ ! -x Rotor ] || [ -n "${REBUILD:-}" ]; then
     make clean >/dev/null 2>&1 || true
-    make -j"$(nproc)" gpu=1 CCAP="$CC" CUDA="$CUDA_HOME"
+    make -j"$(nproc)" gpu=1 CCAP="$CC" CUDA="$CUDA_HOME" all
   fi
 else
   log "CUDA toolkit or nvidia-smi not found -> CPU-only build"
   MODE_ARGS=(--cpu)
   if [ ! -x Rotor ] || [ -n "${REBUILD:-}" ]; then
     make clean >/dev/null 2>&1 || true
-    make -j"$(nproc)"
+    make -j"$(nproc)" all
   fi
+fi
+
+if [ ! -x Rotor ]; then
+  echo "Build completed without creating $INSTALL_DIR/Rotor-Cuda/Rotor." >&2
+  echo "Re-run with REBUILD=1 after checking the make output above." >&2
+  exit 1
 fi
 
 # ---- 4. run ---------------------------------------------------------------

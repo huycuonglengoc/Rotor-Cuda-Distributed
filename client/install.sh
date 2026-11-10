@@ -7,7 +7,7 @@
 # Env: REPO_URL, INSTALL_DIR, CUDA_HOME, CCAP (override GPU compute capability, e.g. 8.6)
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/huycuonglengoc/Rotor-Cuda-Distributed.git}"
+REPO_URL="${REPO_URL:-https://github.com/YOUR_GITHUB_USER/Rotor-Cuda-Distributed.git}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/Rotor-Cuda-Distributed}"
 CUDA_HOME="${CUDA_HOME:-/usr/local/cuda}"
 SUDO=""; [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null && SUDO="sudo"

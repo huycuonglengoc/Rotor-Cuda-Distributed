@@ -457,11 +457,14 @@ void GPUEngine::PrintCudaInfo()
 		CudaSafeCall(cudaSetDevice(i));
 		cudaDeviceProp deviceProp;
 		CudaSafeCall(cudaGetDeviceProperties(&deviceProp, i));
+		// CUDA 13 removed cudaDeviceProp::computeMode -> query it as an attribute (works on all versions)
+		int computeMode = 4;
+		cudaDeviceGetAttribute(&computeMode, cudaDevAttrComputeMode, i);
 		printf("GPU #%d %s (%dx%d cores) (Cap %d.%d) (%.1f MB) (%s)\n",
 			i, deviceProp.name, deviceProp.multiProcessorCount,
 			_ConvertSMVer2Cores(deviceProp.major, deviceProp.minor),
 			deviceProp.major, deviceProp.minor, (double)deviceProp.totalGlobalMem / 1048576.0,
-			sComputeMode[deviceProp.computeMode]);
+			sComputeMode[computeMode >= 0 && computeMode < 4 ? computeMode : 4]);
 	}
 }
 
